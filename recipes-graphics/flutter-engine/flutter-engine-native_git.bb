@@ -3,13 +3,13 @@ DESCRIPTION = "Flutter Engine"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://flutter/LICENSE;md5=a60894397335535eb10b54e2fff9f265"
 
-SRCREV = "9e5072f0ce81206b99db3598da687a19ce57a863"
+SRCREV = "cdc49c575b0bbc6f5160e8b4d7ed646cc81292c0"
 
 S = "${WORKDIR}/git/src"
 
 inherit python3native native
 
-DEPENDS =+ " flutter-engine ninja-native depot-tools-native"
+DEPENDS =+ " depot-tools-native flutter-engine ninja-native"
 
 require gn-utils.inc
 
@@ -20,7 +20,6 @@ COMPATIBLE_MACHINE_x86-64 = "(.*)"
 GN_ARGS = ""
 
 do_patch() {
-
     export CURL_CA_BUNDLE=${STAGING_BINDIR_NATIVE}/depot_tools/ca-certificates.crt
     export PATH=${STAGING_BINDIR_NATIVE}/depot_tools:${PATH}
     export SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
@@ -48,7 +47,7 @@ do_patch[depends] =+ " \
 
 do_configure() {
 
-    ./flutter/tools/gn --unoptimized
+    python ./flutter/tools/gn --unoptimized
 }
 
 do_compile() {

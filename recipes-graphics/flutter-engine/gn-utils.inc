@@ -91,8 +91,7 @@ def parse_args(d):
     parser.add_argument('--fuchsia-cpu', type=str, choices=['x64', 'arm64'], default = 'x64')
     parser.add_argument('--arm-float-abi', type=str, choices=['hard', 'soft', 'softfp'])
 
-    parser.add_argument('--goma', default=True, action='store_true')
-    parser.add_argument('--no-goma', dest='goma', action='store_false')
+    parser.add_argument('--goma', default=False, action='store_true')
 
     parser.add_argument('--lto', default=True, action='store_true')
     parser.add_argument('--no-lto', dest='lto', action='store_false')

@@ -3,7 +3,7 @@ DESCRIPTION = "Flutter Engine"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://flutter/LICENSE;md5=a60894397335535eb10b54e2fff9f265"
 
-SRCREV = "9e5072f0ce81206b99db3598da687a19ce57a863"
+SRCREV = "cdc49c575b0bbc6f5160e8b4d7ed646cc81292c0"
 
 FILESEXTRAPATHS_prepend_poky := "${THISDIR}/files:"
 SRC_URI = "file://sysroot_gni.patch \
@@ -58,6 +58,8 @@ PACKAGECONFIG[mode-jit_release] = "--runtime-mode jit_release"
 
 GN_ARGS = " \
   ${PACKAGECONFIG_CONFARGS} \
+  --embedder-for-target \
+  --arm-float-abi hard \
   --target-os linux \
   --linux-cpu ${@gn_target_arch_name(d)} \
   --target-sysroot ${STAGING_DIR_TARGET} \
@@ -66,7 +68,6 @@ GN_ARGS = " \
   "
 
 do_patch() {
-
     export CURL_CA_BUNDLE=${STAGING_BINDIR_NATIVE}/depot_tools/ca-certificates.crt
     export PATH=${STAGING_BINDIR_NATIVE}/depot_tools:${PATH}
     export SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
@@ -99,12 +100,12 @@ do_patch() {
     fi
 
     cd ${S}
-    gclient.py sync --nohooks --no-history --revision ${SRCREV} ${PARALLEL_MAKE} -v
+    gclient.py sync --no-history --revision ${SRCREV} ${PARALLEL_MAKE} -v
     git apply ../../sysroot_gni.patch
     git apply ../../custom_BUILD_gn.patch
 
-    cd third_party/icu
-    git apply ../../../../icu.patch
+#    cd third_party/icu
+#    git apply ../../../../icu.patch
 }
 do_patch[depends] =+ " \
     depot-tools-native:do_populate_sysroot \
@@ -126,14 +127,14 @@ do_configure() {
     bbnote "echo ${ARGS_GN_APPEND} >> ${ARGS_GN_FILE}"
 
     cd ${S}
-
-    ./flutter/tools/gn ${GN_ARGS} --disable-desktop-embeddings
+    
+    python ./flutter/tools/gn ${GN_ARGS} --disable-desktop-embeddings
 
     echo ${ARGS_GN_APPEND} >> ${ARGS_GN_FILE}
 
     # libraries required for linking so
-    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtbeginS.o ${S}/buildtools/linux-x64/clang/lib/clang/11.0.0/lib/${FLUTTER_TRIPLE}/
-    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtendS.o ${S}/buildtools/linux-x64/clang/lib/clang/11.0.0/lib/${FLUTTER_TRIPLE}/
+    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtbeginS.o ${S}/buildtools/linux-x64/clang/lib/clang/13.0.0/lib/${FLUTTER_TRIPLE}/
+    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtendS.o ${S}/buildtools/linux-x64/clang/lib/clang/13.0.0/lib/${FLUTTER_TRIPLE}/
 }
 
 do_compile() {

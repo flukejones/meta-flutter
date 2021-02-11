@@ -9,8 +9,12 @@ SRC_URI = "git://chromium.googlesource.com/chromium/tools/depot_tools;protocol=h
 
 S = "${WORKDIR}/git"
 
-do_install() {
+do_patch() {
+    sed -i -r 's:(#!\s?/usr/bin/env python\s*$):\13:' ./git/gclient.py
+#    find ./ -type f -regextype posix-extended -regex ".*\.py" -execdir sed -i -r 's:(#!\s?/usr/bin/env python\s*$):\13:' '{}' \;
+}
 
+do_install() {
     install -d ${D}/${bindir}/depot_tools
     cp -r ${S}/* ${D}${bindir}/depot_tools
 
