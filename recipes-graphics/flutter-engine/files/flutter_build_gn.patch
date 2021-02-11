@@ -1,0 +1,51 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index c174f50..8dcef85 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -58,7 +58,7 @@ group("flutter") {
+       "//flutter/lib/snapshot:kernel_platform_files",
+     ]
+ 
+-    if (build_engine_artifacts) {
++    if (build_engine_artifacts && current_toolchain == host_toolchain) {
+       public_deps += [
+         "//flutter/flutter_frontend_server:frontend_server",
+         "//third_party/dart:create_sdk",
+@@ -75,7 +75,7 @@ group("flutter") {
+     }
+   }
+ 
+-  if (build_engine_artifacts) {
++  if (build_engine_artifacts && current_toolchain == host_toolchain) {
+     public_deps += [
+       "//flutter/shell/testing",
+       "//flutter/tools/const_finder",
+diff --git a/DEPS b/DEPS
+index b2a9a6b..dd01c52 100644
+--- a/DEPS
++++ b/DEPS
+@@ -504,7 +504,7 @@ deps = {
+     'packages': [
+       {
+         'package': 'fuchsia/third_party/clang/mac-amd64',
+-        'version': 'hoapl8VNWFGkiCI_tQDt_7wKgyaxie5bw_plTjO00T0C' 
++        'version': 'hoapl8VNWFGkiCI_tQDt_7wKgyaxie5bw_plTjO00T0C'
+       }
+     ],
+     'condition': 'host_os == "mac"',
+@@ -629,6 +629,15 @@ hooks = [
+       'src/build/linux/sysroot_scripts/install-sysroot.py',
+       '--arch=x64'],
+   },
++  {
++    'name': 'linux_sysroot_arm',
++    'pattern': '.',
++    'condition': 'download_linux_deps',
++    'action': [
++      'python',
++      'src/build/linux/sysroot_scripts/install-sysroot.py',
++      '--arch=arm'],
++  },
+   {
+     'name': 'linux_sysroot_arm64',
+     'pattern': '.',

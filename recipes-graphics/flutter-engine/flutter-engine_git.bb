@@ -61,6 +61,7 @@ GN_ARGS = " \
   --embedder-for-target \
   --arm-float-abi hard \
   --target-os linux \
+  --runtime-mode debug \
   --linux-cpu ${@gn_target_arch_name(d)} \
   --target-sysroot ${STAGING_DIR_TARGET} \
   --target-triple ${@gn_clang_triple_prefix(d)} \
@@ -103,8 +104,10 @@ do_patch() {
     gclient.py sync --no-history --revision ${SRCREV} ${PARALLEL_MAKE} -v
     git apply ../../sysroot_gni.patch
     git apply ../../custom_BUILD_gn.patch
+    cd flutter
+    git apply ../../../flutter_build_gn.patch
 
-#    cd third_party/icu
+#    cd ../third_party/icu
 #    git apply ../../../../icu.patch
 }
 do_patch[depends] =+ " \
