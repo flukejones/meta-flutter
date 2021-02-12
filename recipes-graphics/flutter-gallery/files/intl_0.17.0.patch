@@ -1,0 +1,13 @@
+diff --git a/pubspec.yaml b/pubspec.yaml
+index 666a55a..3549941 100644
+--- a/pubspec.yaml
++++ b/pubspec.yaml
+@@ -11,7 +11,7 @@ dependencies:
+     sdk: flutter
+   flutter_localizations:
+     sdk: flutter
+-  intl: ^0.16.1
++  intl: "^0.17.0"
+   flutter_localized_locales: ^1.1.1
+   cupertino_icons: ^1.0.0
+   rally_assets: ^2.0.0

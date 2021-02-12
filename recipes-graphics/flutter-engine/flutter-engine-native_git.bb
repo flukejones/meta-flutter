@@ -3,7 +3,7 @@ DESCRIPTION = "Flutter Engine"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://flutter/LICENSE;md5=a60894397335535eb10b54e2fff9f265"
 
-SRCREV = "cdc49c575b0bbc6f5160e8b4d7ed646cc81292c0"
+SRCREV = "d4453f601890ec682bbf8f5659b70f15cce1d67d"
 
 S = "${WORKDIR}/git/src"
 
@@ -47,7 +47,7 @@ do_patch[depends] =+ " \
 
 do_configure() {
 
-    python ./flutter/tools/gn --unoptimized
+    python ./flutter/tools/gn --unoptimized --clang
 }
 
 do_compile() {
@@ -62,6 +62,7 @@ do_install() {
 
     install -d ${D}${bindir}
     install -m 755 dart ${D}${bindir}
+    # install -m 755 gen_snapshot ${D}${bindir}
 
     install -d ${D}${datadir}/flutter/engine
     install -m 644 frontend_server.dart.snapshot ${D}${datadir}/flutter/engine

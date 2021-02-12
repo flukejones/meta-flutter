@@ -24,15 +24,6 @@ diff --git a/DEPS b/DEPS
 index b2a9a6b..dd01c52 100644
 --- a/DEPS
 +++ b/DEPS
-@@ -504,7 +504,7 @@ deps = {
-     'packages': [
-       {
-         'package': 'fuchsia/third_party/clang/mac-amd64',
--        'version': 'hoapl8VNWFGkiCI_tQDt_7wKgyaxie5bw_plTjO00T0C' 
-+        'version': 'hoapl8VNWFGkiCI_tQDt_7wKgyaxie5bw_plTjO00T0C'
-       }
-     ],
-     'condition': 'host_os == "mac"',
 @@ -629,6 +629,15 @@ hooks = [
        'src/build/linux/sysroot_scripts/install-sysroot.py',
        '--arch=x64'],

@@ -3,11 +3,12 @@ DESCRIPTION = "Flutter Engine"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://flutter/LICENSE;md5=a60894397335535eb10b54e2fff9f265"
 
-SRCREV = "cdc49c575b0bbc6f5160e8b4d7ed646cc81292c0"
+SRCREV = "d4453f601890ec682bbf8f5659b70f15cce1d67d"
 
 FILESEXTRAPATHS_prepend_poky := "${THISDIR}/files:"
 SRC_URI = "file://sysroot_gni.patch \
            file://custom_BUILD_gn.patch \
+           file://flutter_build_gn.patch \
            file://icu.patch \
            "
 
@@ -58,10 +59,11 @@ PACKAGECONFIG[mode-jit_release] = "--runtime-mode jit_release"
 
 GN_ARGS = " \
   ${PACKAGECONFIG_CONFARGS} \
+  --full-dart-sdk \
   --embedder-for-target \
   --arm-float-abi hard \
   --target-os linux \
-  --runtime-mode debug \
+  --runtime-mode release \
   --linux-cpu ${@gn_target_arch_name(d)} \
   --target-sysroot ${STAGING_DIR_TARGET} \
   --target-triple ${@gn_clang_triple_prefix(d)} \
@@ -94,6 +96,12 @@ do_patch() {
     if test -f "build/toolchain/custom/BUILD.gn"; then
         git checkout build/toolchain/custom/BUILD.gn
     fi
+    
+    if test -d "flutter"; then
+        cd flutter
+        git reset --hard
+    fi
+    cd ${S}
 
     [ -d "third_party/icu" ] && cd third_party/icu
     if test -f "source/i18n/plurrule.cpp"; then
@@ -136,8 +144,8 @@ do_configure() {
     echo ${ARGS_GN_APPEND} >> ${ARGS_GN_FILE}
 
     # libraries required for linking so
-    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtbeginS.o ${S}/buildtools/linux-x64/clang/lib/clang/13.0.0/lib/${FLUTTER_TRIPLE}/
-    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtendS.o ${S}/buildtools/linux-x64/clang/lib/clang/13.0.0/lib/${FLUTTER_TRIPLE}/
+    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtbeginS.o ${S}/buildtools/linux-x64/clang/lib/clang/12.0.0/lib/${FLUTTER_TRIPLE}/
+    cp ${STAGING_LIBDIR}/${TARGET_SYS}/9.3.0/crtendS.o ${S}/buildtools/linux-x64/clang/lib/clang/12.0.0/lib/${FLUTTER_TRIPLE}/
 }
 
 do_compile() {
@@ -159,7 +167,9 @@ do_install() {
     install -m 644 icudtl.dat ${D}${bindir}
     install -m 755 libflutter_engine.so ${D}${libdir}
     install -m 644 flutter_embedder.h ${D}${includedir}
-#    install -m 755 clang_x64/gen_snapshot ${D}${bindir}
+    # gen_snapshot is x86 compiled, targetting arm.
+    # has a bunch of lib deps... :(
+    # install -m 755 clang_x64/gen_snapshot ${D}${bindir}
     cp -rv flutter_patched_sdk  ${D}${datadir}/flutter/engine
 }
 
